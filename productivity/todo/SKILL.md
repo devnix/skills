@@ -1,13 +1,15 @@
 ---
 name: todo
-description: Personal tracker for open tasks and concerns (a mixed drawer for dev/system/life). Use when the user wants to jot down a task or worry, log progress on an existing one, list what they have open, or close one. Triggers with /todo and with natural language ("note down that I'm worried about X", "what do I have open?").
+description: Personal tracker for open tasks and concerns (a mixed drawer for dev/system/life). Use when the user wants to jot down a task or worry, log progress on an existing one, list what they have open, close one, or set up where their tasks live. Triggers with /todo and with natural language ("note down that I'm worried about X", "what do I have open?").
+argument-hint: "[setup|add|update|list|close] [task] [text] — or just natural language"
 ---
 
-You manage the user's task tracker in the **`~/Vaults/todo/`** vault. One Markdown note per task. Natural language ALWAYS works: when no explicit verb is given, infer the intent (add / update / list / close) from the text.
+You manage the user's task tracker in a Markdown vault. One note per task. Natural language ALWAYS works: when no explicit verb is given, infer the intent (setup / add / update / list / close) from the text.
 
 ## Vault rules
 
-- Path: `~/Vaults/todo/`. If the user (or their project config) names a different vault path, use that instead. Live tasks at the root; closed ones in `~/Vaults/todo/Archive/`.
+- **Vault location**: declared in the user's `~/CLAUDE.md` (a line naming the tasks folder and this skill). If it's not already in your context, read `~/CLAUDE.md`; if nothing is declared there, run `setup` before any other verb. Below, `<vault>` means that folder.
+- Live tasks at the vault root; closed ones in `<vault>/Archive/`.
 - **Adapt to the user's language**: note prose, Log entries, your questions, replies and table headers all go in the language the user speaks to you. Only the frontmatter values stay the fixed English tokens below, so notes remain queryable.
 - Plain Markdown (no community plugins or executable syntax), YAML frontmatter.
 - Filename: **descriptive kebab-case slug** (`switch-power-provider.md`), no date prefix.
@@ -37,12 +39,19 @@ priority: medium       # high | medium | low
 
 ## Verbs
 
+### setup — configure where tasks live
+`/todo setup` or NL ("set up my task tracker") — and run it automatically when no vault location is declared.
+1. Ask the user where their tasks should live, suggesting `~/Vaults/todo/` as the default.
+2. Create the folder and its `Archive/` subfolder if missing.
+3. Record the choice in the user's `~/CLAUDE.md` (create the file if needed): a short line stating the tasks vault path and that it's managed by the `todo` skill. If a declaration already exists, update it instead of duplicating it.
+4. Confirm the path and where it was recorded.
+
 ### add — create a task
 `/todo add "<text>"` or NL ("note down that...").
 1. Derive a kebab-case slug from the subject. If that file already exists, adjust the slug or ask.
 2. Write an **in-depth Context** from what the user said. If it's terse and key context is missing (what's broken, why it matters, what solving it looks like), ask **1-2 questions** before writing; don't invent details.
 3. Infer `tags` (dev/system/life/idea) and `priority` (medium by default) from the content; when unsure about priority, leave `medium`.
-4. Write `~/Vaults/todo/<slug>.md` with the frontmatter, the Context and the first Log entry; confirm the path.
+4. Write `<vault>/<slug>.md` with the frontmatter, the Context and the first Log entry; confirm the path.
 
 ### update — log progress
 `/todo update <task> "<text>"` or NL ("update the freeze one: ...").
@@ -60,7 +69,7 @@ priority: medium       # high | medium | low
 `/todo close <task>` or NL ("close X", "X is done now").
 1. Resolve `<task>` as in `update`.
 2. Set `status: done`, refresh `updated`, add a closing Log entry (what got resolved).
-3. **Move** the file to `~/Vaults/todo/Archive/<slug>.md`.
+3. **Move** the file to `<vault>/Archive/<slug>.md`.
 4. Confirm.
 
 ## Notes
