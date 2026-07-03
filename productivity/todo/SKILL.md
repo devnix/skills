@@ -8,7 +8,7 @@ You manage the user's task tracker in a Markdown vault. One note per task. Natur
 
 ## Vault rules
 
-- **Vault location**: declared in the user's `~/CLAUDE.md` (a line naming the tasks folder and this skill). If it's not already in your context, read `~/CLAUDE.md`; if nothing is declared there, run `setup` before any other verb. Below, `<vault>` means that folder.
+- **Vault location**: declared in the user's memory file `~/.claude/CLAUDE.md` (a line naming the tasks folder and this skill). If it's not already in your context, read `~/.claude/CLAUDE.md`; if nothing is declared there, run `setup` before any other verb. Below, `<vault>` means that folder.
 - Live tasks at the vault root; closed ones in `<vault>/Archive/`.
 - **Adapt to the user's language**: note prose, Log entries, questions, replies, and table headers all go in the language the user speaks to you. Only the frontmatter values stay the fixed English tokens below, so notes remain queryable.
 - Plain Markdown (no community plugins or executable syntax), YAML frontmatter.
@@ -43,7 +43,7 @@ priority: medium       # high | medium | low
 `/todo setup` or NL ("set up my task tracker") — and run it automatically when no vault location is declared.
 1. Ask the user where their tasks should live, suggesting `~/Vaults/todo/` as the default.
 2. Create the folder and its `Archive/` subfolder if missing.
-3. Record the choice in the user's `~/CLAUDE.md` (create the file if needed): one line stating the vault path and that the `todo` skill manages it. Update any existing declaration rather than adding a second.
+3. Record the choice in the user's memory file `~/.claude/CLAUDE.md` (create the file if needed): one line stating the vault path and that the `todo` skill manages it. Update any existing declaration rather than adding a second.
 4. Confirm the path and where it was recorded.
 
 ### add — create a task
