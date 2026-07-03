@@ -17,7 +17,7 @@ git clone https://github.com/devnix/skills
 cp -r skills/productivity/todo ~/.claude/skills/todo
 ```
 
-Then invoke it with `/todo` — or just talk: the skills are designed to trigger on natural language too, in whatever language you speak to your agent.
+Then invoke it with `/todo` — or just talk: the skills trigger on natural language, in whatever language you speak to your agent.
 
 ## License
 

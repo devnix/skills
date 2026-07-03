@@ -1,20 +1,20 @@
 ---
 name: todo
 description: Personal tracker for open tasks and concerns (a mixed drawer for dev/system/life). Use when the user wants to jot down a task or worry, log progress on an existing one, list what they have open, close one, or set up where their tasks live. Triggers with /todo and with natural language ("note down that I'm worried about X", "what do I have open?").
-argument-hint: "[setup|add|update|list|close] [task] [text] — or just natural language"
+argument-hint: "[setup|add|update|list|close] [task] [text] — or natural language"
 ---
 
-You manage the user's task tracker in a Markdown vault. One note per task. Natural language ALWAYS works: when no explicit verb is given, infer the intent (setup / add / update / list / close) from the text.
+You manage the user's task tracker in a Markdown vault. One note per task. Natural language ALWAYS works: when the user gives no explicit verb, infer the intent (setup / add / update / list / close) from the text.
 
 ## Vault rules
 
 - **Vault location**: declared in the user's `~/CLAUDE.md` (a line naming the tasks folder and this skill). If it's not already in your context, read `~/CLAUDE.md`; if nothing is declared there, run `setup` before any other verb. Below, `<vault>` means that folder.
 - Live tasks at the vault root; closed ones in `<vault>/Archive/`.
-- **Adapt to the user's language**: note prose, Log entries, your questions, replies and table headers all go in the language the user speaks to you. Only the frontmatter values stay the fixed English tokens below, so notes remain queryable.
+- **Adapt to the user's language**: note prose, Log entries, questions, replies, and table headers all go in the language the user speaks to you. Only the frontmatter values stay the fixed English tokens below, so notes remain queryable.
 - Plain Markdown (no community plugins or executable syntax), YAML frontmatter.
 - Filename: **descriptive kebab-case slug** (`switch-power-provider.md`), no date prefix.
 - **Real system dates/times**: get the date with `date +%F` and the time with `date +%H:%M`. Never invent the date.
-- Don't touch `obsidian.json` or the Obsidian app; you only write `.md` files.
+- Write only `.md` files; never touch `obsidian.json` or the Obsidian app.
 
 ### Note format
 
@@ -43,14 +43,14 @@ priority: medium       # high | medium | low
 `/todo setup` or NL ("set up my task tracker") — and run it automatically when no vault location is declared.
 1. Ask the user where their tasks should live, suggesting `~/Vaults/todo/` as the default.
 2. Create the folder and its `Archive/` subfolder if missing.
-3. Record the choice in the user's `~/CLAUDE.md` (create the file if needed): a short line stating the tasks vault path and that it's managed by the `todo` skill. If a declaration already exists, update it instead of duplicating it.
+3. Record the choice in the user's `~/CLAUDE.md` (create the file if needed): one line stating the vault path and that the `todo` skill manages it. Update any existing declaration rather than adding a second.
 4. Confirm the path and where it was recorded.
 
 ### add — create a task
 `/todo add "<text>"` or NL ("note down that...").
 1. Derive a kebab-case slug from the subject. If that file already exists, adjust the slug or ask.
 2. Write an **in-depth Context** from what the user said. If it's terse and key context is missing (what's broken, why it matters, what solving it looks like), ask **1-2 questions** before writing; don't invent details.
-3. Infer `tags` (dev/system/life/idea) and `priority` (medium by default) from the content; when unsure about priority, leave `medium`.
+3. Infer `tags` (dev/system/life/idea) and `priority` (medium by default) from the content.
 4. Write `<vault>/<slug>.md` with the frontmatter, the Context and the first Log entry; confirm the path.
 
 ### update — log progress
@@ -74,5 +74,5 @@ priority: medium       # high | medium | low
 
 ## Notes
 
-- Reopening, re-reading or rewriting the detail have no shortcut: do it via natural language (e.g. move the file out of `Archive/` and set `status: open`).
+- Reopening, re-reading, or rewriting the detail has no shortcut: do it via natural language (e.g. move the file out of `Archive/` and set `status: open`).
 - On create/update, reply in 1-2 lines with the path and the change; don't dump the whole file unless asked.
